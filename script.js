@@ -16,47 +16,6 @@ $(document).ready(function() {
     }, 1000);
      
 
-    //DOM manipulation code
-
-    let row = $("<div></div>");
-    row.addClass("row");
-    
-    // left part
-        let columnLeft = $("<div></div>");
-        columnLeft.addClass("col-lg-2 hour");
-
-        let leftTime= $("<p><p>");
-       // leftTime.text("00AM");
-
-        columnLeft.append(leftTime);
-
-    // middle part
-        let columnMiddle = $("<div></div>");
-        columnMiddle.addClass("col-lg-8");
-
-        let activityNote = $("<textarea></textarea>");
-        activityNote.text("");
-
-        columnMiddle.append(activityNote);
-
-    // right part
-        let columntRight = $("<div></div>");
-        columntRight.addClass("col-lg-2");
-
-        let saveButton = $("<button></button>");
-        saveButton.addClass("saveBtn");
-        saveButton.text("SAVE");
-        
-        columntRight.append(saveButton);
-
-    
-        // left, middle, right parts go to one row
-        row.append(columnLeft,columnMiddle,columntRight);
-        // each row goes inside to the container
-
-    $(".container").append(row);
-
-
 function renderPlanner() {
 
     // start from 00 to 23
@@ -69,6 +28,46 @@ function renderPlanner() {
         } else {
             id = i.toString();
         }  
+
+        //DOM manipulation code
+        let domArray=["row", ]
+        let row = $("<div></div>");
+        row.addClass("row");
+        
+        // left part
+            let columnLeft = $("<div></div>");
+            columnLeft.addClass("col-lg-2 hour");
+
+            let leftTime= $("<p><p>");
+        
+            columnLeft.append(leftTime);
+
+        // middle part
+            let columnMiddle = $("<div></div>");
+            columnMiddle.addClass("col-lg-8");
+
+            let activityNote = $("<textarea></textarea>");
+            activityNote.text("");
+
+            columnMiddle.append(activityNote);
+
+        // right part
+            let columntRight = $("<div></div>");
+            columntRight.addClass("col-lg-2");
+
+            let saveButton = $("<button></button>");
+            saveButton.addClass("saveBtn");
+            saveButton.text("SAVE");
+            
+            columntRight.append(saveButton);
+
+        
+            // left, middle, right parts go to one row
+            row.append(columnLeft,columnMiddle,columntRight);
+            // each row goes inside to the container
+
+        $(".container").append(row);
+
 
 
 

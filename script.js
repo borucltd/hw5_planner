@@ -12,9 +12,36 @@ $(document).ready(function() {
         $("#currentDay").text(currentTime);
         // update where we are
         currentHour = moment().format('HH');
-        console.log(currentHour);
+        
+        if (moment().format('mm') == 59  &&  moment().format('ss') == 59) {
+            console.log("time to refesh");
+            refreshCurrentRow();
+        }
     }, 1000);
      
+// function which marks the current hour as red
+// it will run on every new hour
+// as the result it will highlight the current row with red color
+function refreshCurrentRow(){
+    // becasue this function run only when time is XX:59:59
+    // we assume that red color can be moved as soon as we are in new hour
+    let oldHour = moment().format('HH');
+    let newHour = oldHour;
+    while  ( moment().format('ss') === 59 ) {
+        newHour = moment().format('HH');
+    }
+
+    // this is new actual hour
+    newHour = moment().format('HH'); 
+
+    // we need to change 2 rows
+    $("#an" + oldHour).removeClass("present");
+    $("#an" + oldHour).removeClass("past");
+
+    $("#an" + newHour).removeClass("future");
+    $("#an" + newHour).addClass("present");
+
+}
 
 function renderPlanner() {
 
@@ -61,8 +88,7 @@ function renderPlanner() {
                 // this is future
                 activityNote.addClass("future");
             }
-
-            
+           
         
         // add IDs to each element, each element from the same row will have same numeric part of ID
         row.attr("id","r" + id);
@@ -99,5 +125,11 @@ function renderPlanner() {
     // fire up the Planner
     // ===========================
     renderPlanner();
+
+
+
+
+
+
 
 });  

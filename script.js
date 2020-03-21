@@ -2,47 +2,19 @@
 $(document).ready(function() {
 
     // global variable, we will use current HOUR as the pointer to the active row
-    let currentHour = 0;
-
-    // jQuery DOM to display current time every second
-    let timer= setInterval(function() {
-        // take the time 
-        let currentTime = moment().format('MMMM Do YYYY, HH:mm:ss');
-        // display 
-        $("#currentDay").text(currentTime);
-        // update where we are
-        currentHour = moment().format('HH');
-        
-        if (moment().format('mm') == 59  &&  moment().format('ss') == 59) {
-            console.log("time to refesh");
-            refreshCurrentRow();
+  
+    if (localStorage.getItem("notes") === null) {
+        let notesArray = [];
+        for (let i=0; i<24; i++){
+            notesArray[i]="_";
         }
-    }, 1000);
-     
-// function which marks the current hour as red
-// it will run on every new hour
-// as the result it will highlight the current row with red color
-function refreshCurrentRow(){
-    // becasue this function run only when time is XX:59:59
-    // we assume that red color can be moved as soon as we are in new hour
-    let oldHour = moment().format('HH');
-    let newHour = oldHour;
-    while  ( moment().format('ss') === 59 ) {
-        newHour = moment().format('HH');
+        localStorage.setItem("notes", JSON.stringify(notesArray));
+    } else {
+
+        let notesArray = JSON.parse(localStorage.getItem("notes"));
     }
 
-    // this is new actual hour
-    newHour = moment().format('HH'); 
-
-    // we need to change 2 rows
-    $("#an" + oldHour).removeClass("present");
-    $("#an" + oldHour).removeClass("past");
-
-    $("#an" + newHour).removeClass("future");
-    $("#an" + newHour).addClass("present");
-
-}
-
+ 
 function renderPlanner() {
 
     // start from 00 to 23, this can be easily changed to 09 to 17
@@ -101,7 +73,10 @@ function renderPlanner() {
         // add texts to DOM elements ==> HERE we will need to check local storage
         // we need to display AM and PM 
         (parseInt(id) < 12 ) ? leftTime.text(id + "AM") : leftTime.text(id + "PM")
-        activityNote.text("");
+
+      
+
+        
         saveButton.text("SAVE");
         saveButton.attr("type","button");
 
@@ -117,7 +92,43 @@ function renderPlanner() {
     }
 }
 
+    // function which marks the current hour as red
+    // it will run on every new hour
+    // as the result it will highlight the current row with red color
+    function refreshCurrentRow(){
+        // becasue this function run only when time is XX:59:59
+        // we assume that red color can be moved as soon as we are in new hour
+        let oldHour = moment().format('HH');
+        let newHour = oldHour;
+        setTimeout(function(){ newHour = moment().format('HH'); }, 1000);
 
+        // this is new actual hour
+        console.log("Old hour:" + oldHour);
+        console.log("New hour:" + newHour);
+
+        // we need to change 2 rows
+        $("#an" + oldHour).removeClass("present");
+        $("#an" + oldHour).addClass("past");
+
+        $("#an" + newHour).removeClass("future");
+        $("#an" + newHour).addClass("present");      
+    }
+
+
+    // jQuery DOM to display current time every second
+    let timer= setInterval(function() {
+        // take the time 
+        let currentTime = moment().format('MMMM Do YYYY, HH:mm:ss');
+        // display 
+        $("#currentDay").text(currentTime);
+        // update where we are
+        currentHour = moment().format('HH');
+        
+        if (moment().format('mm') == 59  &&  moment().format('ss') == 59) {
+            console.log("time to refesh");
+            refreshCurrentRow();
+        }
+    }, 1000);
 
 
 

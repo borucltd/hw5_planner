@@ -43,10 +43,12 @@ function renderPlanner() {
 
         // add classes to DOM objects
         row.addClass("row");
-        columnLeft.addClass("col-lg-2 hour");
-        columnMiddle.addClass("col-lg-8");
-        columntRight.addClass("col-lg-2");
-        saveButton.addClass("saveBtn");
+        
+        columnLeft.addClass("col-lg-2 col-md-2 col-sm-2 hour pr-0 text-right");
+        columnMiddle.addClass("col-lg-8 col-md-8 col-sm-8 px-0");
+        columntRight.addClass("col-lg-2 col-md-2 col-sm-2 pl-0");
+        activityNote.addClass("h-100");
+        saveButton.addClass("btn btn-primary saveBtn h-100 w-100"); //
             // here we need to set different backgournd for actvity
             // similar thing will be done by refreshPlanner which will be triggered every hour
             if ( parseInt(id) < parseInt(moment().format('HH'))) {
@@ -71,10 +73,11 @@ function renderPlanner() {
         saveButton.attr("id","sb" + id);
 
         // add texts to DOM elements ==> HERE we will need to check local storage
-        // we need to display AM and PM
+        // we need to display AM and PM 
         (parseInt(id) < 12 ) ? leftTime.text(id + "AM") : leftTime.text(id + "PM")
         activityNote.text("");
         saveButton.text("SAVE");
+        saveButton.attr("type","button");
 
         // append DOM elements to make one row
         columnLeft.append(leftTime);

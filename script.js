@@ -18,17 +18,70 @@ $(document).ready(function() {
 
     //DOM manipulation code
 
-    let row = $("<div class=row></div>");
-    var columnLeft = $("<div class=col-lg-2></div>");
-    var columngMiddle = $("<div class=col-lg-8></div>");
-    var columntRight = $("<div class=col-lg-2></div>");
-    var saveButton = $("<button type=button class='btn btn-success'></button>");
+    let row = $("<div></div>");
+    row.addClass("row");
+    
+    // left part
+        let columnLeft = $("<div></div>");
+        columnLeft.addClass("col-lg-2 hour");
 
+        let leftTime= $("<p><p>");
+       // leftTime.text("00AM");
 
-    columnLeft.text("hour will be displayed");
-    columngMiddle.text("here you will need to put a note");
-    columntRight.append(saveButton);
-    row.append(columnLeft,columngMiddle,columntRight);
+        columnLeft.append(leftTime);
+
+    // middle part
+        let columnMiddle = $("<div></div>");
+        columnMiddle.addClass("col-lg-8");
+
+        let activityNote = $("<textarea></textarea>");
+        activityNote.text("");
+
+        columnMiddle.append(activityNote);
+
+    // right part
+        let columntRight = $("<div></div>");
+        columntRight.addClass("col-lg-2");
+
+        let saveButton = $("<button></button>");
+        saveButton.addClass("saveBtn");
+        saveButton.text("SAVE");
+        
+        columntRight.append(saveButton);
+
+    
+        // left, middle, right parts go to one row
+        row.append(columnLeft,columnMiddle,columntRight);
+        // each row goes inside to the container
 
     $(".container").append(row);
+
+
+function renderPlanner() {
+
+    // start from 00 to 23
+    let id="00";
+    for (let i=0; i<24; i++){
+        // generetate id which will be assigned to all eleemnts in ONE row, represetns hour
+        if (i < 10) {
+            // for i = 0 1 2 3 ... 9, we need 00, 01, 02 ... 09
+            id = (parseInt(i,10) + 100).toString().substring(1);
+        } else {
+            id = i.toString();
+        }  
+
+
+
+       
+
+
+    }
+}
+
+
+
+
+    // DOM
+    renderPlanner();
+
 });  

@@ -1,20 +1,7 @@
 // wait for the whole DOM to load
 $(document).ready(function() {
 
-    // global variable, we will use current HOUR as the pointer to the active row
-  
-    if (localStorage.getItem("notes") === null) {
-        let notesArray = [];
-        for (let i=0; i<24; i++){
-            notesArray[i]="_";
-        }
-        localStorage.setItem("notes", JSON.stringify(notesArray));
-    } else {
-
-        let notesArray = JSON.parse(localStorage.getItem("notes"));
-    }
-
- 
+// creates DOM, reads from local storage 
 function renderPlanner() {
 
     // start from 00 to 23, this can be easily changed to 09 to 17
@@ -26,7 +13,7 @@ function renderPlanner() {
             // for i = 0 1 2 3 ... 9, we need 00, 01, 02 ... 09
             id = (parseInt(i,10) + 100).toString().substring(1);
         } else {
-            // this is to make sure this is string
+            // this is to make sure this is a string
             id = i.toString();
         }  
 
@@ -42,16 +29,15 @@ function renderPlanner() {
 
         // add classes to DOM objects
         row.addClass("row");
-        
         columnLeft.addClass("col-lg-2 col-md-2 col-sm-2 hour pr-0 text-right");
         columnMiddle.addClass("col-lg-8 col-md-8 col-sm-8 px-0");
         columntRight.addClass("col-lg-2 col-md-2 col-sm-2 pl-0");
         activityNote.addClass("h-100");
-        saveButton.addClass("btn btn-primary saveBtn h-100 w-100"); //
-            // here we need to set different backgournd for actvity
-            // similar thing will be done by refreshPlanner which will be triggered every hour
+        saveButton.addClass("btn btn-primary saveBtn h-100 w-100"); 
+        
+            // here we need to set different backgrounds
             if ( parseInt(id) < parseInt(moment().format('HH'))) {
-                // this will be past
+                // this is past
                 activityNote.addClass("past");
             } else if (parseInt(id) === parseInt(moment().format('HH'))) {
                 // this is present
@@ -63,95 +49,88 @@ function renderPlanner() {
            
         
         // add IDs to each element, each element from the same row will have same numeric part of ID
+        // for example, row for time 03am will have the following DOM objects with ids:
+        // r03, cl03,cm03,cr03,an03,sb03
         row.attr("id","r" + id);
         columnLeft.attr("id","cl" + id);
         columnMiddle.attr("id","cm" + id);
         columntRight.attr("id","cr" + id);
         activityNote.attr("id","an" + id);
         saveButton.attr("id","sb" + id);
-
         
-        // we need to display AM and PM 
+        // add text to left columnt, we need to display AM and PM
         (parseInt(id) < 12 ) ? leftTime.text(id + "AM") : leftTime.text(id + "PM")
-        // add texts to DOM elements ==> HERE we will need to check local storage
-        
-
-        
+        // add text to each save button, add bootstrap type=button        
         saveButton.text("SAVE");
         saveButton.attr("type","button");
+        // generate local storage key
+        let lsID = "an" + id;
+        // read from local storage
+        let localNote = localStorage.getItem(lsID);
+        // read and assign to activity note IF NOT NULL
+        localNote !== "null" ? activityNote.val(localNote) : activityNote.val("");
 
-        // append DOM elements to make one row
+        // append DOM elements
         columnLeft.append(leftTime);
         columnMiddle.append(activityNote);
         columntRight.append(saveButton);
+        // append DOM elements to one row
         row.append(columnLeft,columnMiddle,columntRight); 
-            
-        // add row to container
+        // append row to the main container
         $(".container").append(row);
        
     }
 }
 
-    // function which marks the current hour as red
-    // it will run on every new hour
-    // as the result it will highlight the current row with red color
-    // and mark the last hour as grey
-    function refreshCurrentRow(oldHour){
-        // becasue this function runs only when time is XX:59:59
-        // we assume that red color can be moved as soon as we are in new hour
-        let newHour = oldHour;
-        // wait 5 seconds, so we are 100% sure we are in new hour
-        setTimeout(function(){ newHour = moment().format('HH'); }, 5000);
+// function which marks the current hour as red
+// it will run on every new hour
+// as the result it will highlight the current row with red color
+// and mark the last hour as grey
+function refreshCurrentRow(oldHour){
+    // becasue this function runs only when time is XX:59:59
+    // we assume that red color can be moved as soon as we are in new hour
+    let newHour = oldHour;
+    // wait 5 seconds, so we are 100% sure we are in new hour
+    setTimeout(function(){ newHour = moment().format('HH'); }, 5000);
 
-         // we need to change 2 rows
-        $("#an" + oldHour).removeClass("present");
-        $("#an" + oldHour).addClass("past");
-        
-        $("#an" + newHour).removeClass("future");
-        $("#an" + newHour).addClass("present");      
+        // we need to change 2 rows
+    $("#an" + oldHour).removeClass("present");
+    $("#an" + oldHour).addClass("past");
+
+    $("#an" + newHour).removeClass("future");
+    $("#an" + newHour).addClass("present");      
+}
+
+
+// jQuery DOM to display current time every second
+let timer= setInterval(function() {
+    
+    // take the time 
+    let currentTime = moment().format('MMMM Do YYYY, HH:mm:ss');
+    
+    // display 
+    $("#currentDay").text(currentTime);
+    
+    // update current hour
+    currentHour = moment().format('HH');
+    
+    // we look for the following time XX:59:59
+    if (moment().format('mm') == 59  &&  moment().format('ss') == 59) {
+        // this means in a second we start next hour so the DOM can be refreshed
+        refreshCurrentRow(currentHour);
     }
+}, 1000);
 
+renderPlanner();
 
-    // jQuery DOM to display current time every second
-    let timer= setInterval(function() {
-        // take the time 
-        let currentTime = moment().format('MMMM Do YYYY, HH:mm:ss');
-        // display 
-        $("#currentDay").text(currentTime);
-        // update where we are
-        currentHour = moment().format('HH');
-        
-        // we look for the following time XX:59:59
-        if (moment().format('mm') == 59  &&  moment().format('ss') == 59) {
-            // this means in a second we start next hour so the DOM can be refreshed
-            refreshCurrentRow(currentHour);
-        }
-    }, 1000);
-
-    renderPlanner();
-    $(".saveBtn").on( "click", function() {
-        // stops execution of default action
-        event.preventDefault(); 
-
-        console.log( "Saving to local storage" );
-        // calculate DOM id of corresponding notes e.g.==> an + 03
-        let id = "an" + this.id.substr(2);
-        console.log($("#"+id).val());
-
-        console.log(id);
-    
-    
-    });
-
-    // ===========================
-    // fire up the Planner
-    // ===========================
-    
-
-
-
-
-
-
+// each save button  on click saves to local storage
+$(".saveBtn").on( "click", function() {
+    // stops execution of default action
+    event.preventDefault(); 
+    // calculate DOM id of corresponding activity note e.g.==> an + 03
+    let id = "an" + this.id.substr(2);
+    // save to local storage, create key-value e.g. an03-value_of(#an03)
+    localStorage.setItem(id,$("#"+id).val()); 
+});
 
 });  

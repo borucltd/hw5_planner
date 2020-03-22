@@ -70,11 +70,11 @@ function renderPlanner() {
         activityNote.attr("id","an" + id);
         saveButton.attr("id","sb" + id);
 
-        // add texts to DOM elements ==> HERE we will need to check local storage
+        
         // we need to display AM and PM 
         (parseInt(id) < 12 ) ? leftTime.text(id + "AM") : leftTime.text(id + "PM")
-
-      
+        // add texts to DOM elements ==> HERE we will need to check local storage
+        
 
         
         saveButton.text("SAVE");
@@ -100,8 +100,8 @@ function renderPlanner() {
         // becasue this function runs only when time is XX:59:59
         // we assume that red color can be moved as soon as we are in new hour
         let newHour = oldHour;
-        // wait 1 second, so we are 100% sure we are in new hour
-        setTimeout(function(){ newHour = moment().format('HH'); }, 1000);
+        // wait 5 seconds, so we are 100% sure we are in new hour
+        setTimeout(function(){ newHour = moment().format('HH'); }, 5000);
 
          // we need to change 2 rows
         $("#an" + oldHour).removeClass("present");
@@ -128,12 +128,25 @@ function renderPlanner() {
         }
     }, 1000);
 
+    renderPlanner();
+    $(".saveBtn").on( "click", function() {
+        // stops execution of default action
+        event.preventDefault(); 
 
+        console.log( "Saving to local storage" );
+        // calculate DOM id of corresponding notes e.g.==> an + 03
+        let id = "an" + this.id.substr(2);
+        console.log($("#"+id).val());
+
+        console.log(id);
+    
+    
+    });
 
     // ===========================
     // fire up the Planner
     // ===========================
-    renderPlanner();
+    
 
 
 

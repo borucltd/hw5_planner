@@ -86,19 +86,13 @@ function renderPlanner() {
 // it will run on every new hour
 // as the result it will highlight the current row with red color
 // and mark the last hour as grey
-function refreshCurrentRow(oldHour){
-    // becasue this function runs only when time is XX:59:59
-    // we assume that red color can be moved as soon as we are in new hour
-    let newHour = oldHour;
-    // wait 5 seconds, so we are 100% sure we are in new hour
-    setTimeout(function(){ newHour = moment().format('HH'); }, 5000);
+function refreshCurrentRow(oHour,nHour){
+    // we need to change 2 rows
+    $("#an" + oHour).removeClass("present");
+    $("#an" + oHour).addClass("past");
 
-        // we need to change 2 rows
-    $("#an" + oldHour).removeClass("present");
-    $("#an" + oldHour).addClass("past");
-
-    $("#an" + newHour).removeClass("future");
-    $("#an" + newHour).addClass("present");      
+    $("#an" + nHour).removeClass("future");
+    $("#an" + nHour).addClass("present");      
 }
 
 
@@ -116,8 +110,10 @@ let timer= setInterval(function() {
     
     // we look for the following time XX:59:59
     if (moment().format('mm') == 59  &&  moment().format('ss') == 59) {
-        // this means in a second we start next hour so the DOM can be refreshed
-        refreshCurrentRow(currentHour);
+        // calculate next hour
+        let newHour = moment().add(1,'hours').format('HH');
+        // pass actual hour and next hour
+        refreshCurrentRow(currentHour,newHour);
     }
 }, 1000);
 
@@ -128,9 +124,11 @@ $(".saveBtn").on( "click", function() {
     // stops execution of default action
     event.preventDefault(); 
     // calculate DOM id of corresponding activity note e.g.==> an + 03
-    let id = "an" + this.id.substr(2);
+    let id = this.id.substr(2);
     // save to local storage, create key-value e.g. an03-value_of(#an03)
-    localStorage.setItem(id,$("#"+id).val()); 
+    localStorage.setItem("an"+id,$("#an"+id).val()); 
+    // add tick icon to the left column
+    $("#cl" + id).addClass("bg-warning");
 });
 
 });  

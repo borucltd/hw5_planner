@@ -95,21 +95,18 @@ function renderPlanner() {
     // function which marks the current hour as red
     // it will run on every new hour
     // as the result it will highlight the current row with red color
-    function refreshCurrentRow(){
-        // becasue this function run only when time is XX:59:59
+    // and mark the last hour as grey
+    function refreshCurrentRow(oldHour){
+        // becasue this function runs only when time is XX:59:59
         // we assume that red color can be moved as soon as we are in new hour
-        let oldHour = moment().format('HH');
         let newHour = oldHour;
+        // wait 1 second, so we are 100% sure we are in new hour
         setTimeout(function(){ newHour = moment().format('HH'); }, 1000);
 
-        // this is new actual hour
-        console.log("Old hour:" + oldHour);
-        console.log("New hour:" + newHour);
-
-        // we need to change 2 rows
+         // we need to change 2 rows
         $("#an" + oldHour).removeClass("present");
         $("#an" + oldHour).addClass("past");
-
+        
         $("#an" + newHour).removeClass("future");
         $("#an" + newHour).addClass("present");      
     }
@@ -124,9 +121,10 @@ function renderPlanner() {
         // update where we are
         currentHour = moment().format('HH');
         
+        // we look for the following time XX:59:59
         if (moment().format('mm') == 59  &&  moment().format('ss') == 59) {
-            console.log("time to refesh");
-            refreshCurrentRow();
+            // this means in a second we start next hour so the DOM can be refreshed
+            refreshCurrentRow(currentHour);
         }
     }, 1000);
 

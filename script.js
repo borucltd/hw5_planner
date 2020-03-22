@@ -28,12 +28,12 @@ function renderPlanner() {
         let saveButton = $("<button></button>");
 
         // add classes to DOM objects
-        row.addClass("row");
-        columnLeft.addClass("col-lg-2 col-md-2 col-sm-2 hour pr-0 text-right");
-        columnMiddle.addClass("col-lg-8 col-md-8 col-sm-8 px-0");
-        columntRight.addClass("col-lg-2 col-md-2 col-sm-2 pl-0");
+        row.addClass("row text-center");
+        columnLeft.addClass("col-sm-2 col-2 hour pr-0 text-right");
+        columnMiddle.addClass("col-sm-8 col-8 px-0");
+        columntRight.addClass("col-sm-2 col-2 pl-0");
         activityNote.addClass("h-100");
-        saveButton.addClass("btn btn-primary saveBtn h-100 w-100"); 
+        saveButton.addClass("btn btn-primary saveBtn h-100 w-100 btn-block"); 
         
             // here we need to set different backgrounds
             if ( parseInt(id) < parseInt(moment().format('HH'))) {
